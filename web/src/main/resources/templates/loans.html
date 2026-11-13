@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Loans · Library desk</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body>
+<header class="topbar">
+    <a class="brand" th:href="@{/}"><span class="brand-mark">L</span> Library desk</a>
+    <nav aria-label="Main navigation"><a th:href="@{/}">Overview</a><a th:href="@{/books}">Books</a><a th:href="@{/members}">Members</a><a class="active" th:href="@{/loans}">Loans</a></nav>
+</header>
+<main class="page">
+    <div class="page-heading"><div><p class="eyebrow">CHECKOUT DESK</p><h1>Loans</h1><p class="muted">Issue books, keep track of due dates, and record returns.</p></div></div>
+    <div class="alert alert-success" role="status" th:if="${success}" th:text="${success}"></div>
+    <div class="alert alert-error" role="alert" th:if="${error}" th:text="${error}"></div>
+    <section class="panel">
+        <div class="section-heading compact"><div><h2>Issue a book</h2><p class="muted">Choose a member and an available title.</p></div></div>
+        <form class="form-grid" method="post" th:action="@{/loans}">
+            <label>Member<select name="memberId" required><option value="" disabled selected>Choose a member</option><option th:each="member : ${members}" th:value="${member.id}" th:text="${member.name + ' · ' + member.type}">Member</option></select></label>
+            <label>Book<select name="bookId" required><option value="" disabled selected>Choose an available book</option><option th:each="book : ${books}" th:if="${book.available > 0}" th:value="${book.id}" th:text="${book.title + ' · ' + book.available + ' available'}">Book</option></select></label>
+            <label>Loan length<input name="days" type="number" min="1" max="365" value="14" required></label>
+            <div class="form-action"><button class="button button-dark" type="submit">Issue book</button></div>
+        </form>
+    </section>
+    <section class="section">
+        <div class="section-heading"><div><p class="eyebrow">LENDING HISTORY</p><h2>All loans</h2></div></div>
+        <div class="empty-state" th:if="${#lists.isEmpty(issues)}"><span class="empty-icon">↔</span><div><strong>No loans yet</strong><p class="muted">Issued books will show up here.</p></div></div>
+        <div class="table-wrap" th:unless="${#lists.isEmpty(issues)}">
+            <table><thead><tr><th>Book</th><th>Member</th><th>Issued</th><th>Due</th><th>Status</th><th>Fine</th><th></th></tr></thead>
+                <tbody><tr th:each="issue : ${issues}">
+                    <td class="primary-cell" th:text="${issue.bookTitle}">Book title</td>
+                    <td th:text="${issue.memberName}">Member</td>
+                    <td th:text="${issue.issueDate}">2026-01-01</td>
+                    <td th:text="${issue.dueDate}">2026-01-15</td>
+                    <td><span class="badge" th:classappend="${issue.returned} ? 'badge-ready' : (${issue.dueDate.isBefore(today)} ? 'badge-late' : 'badge-out')" th:text="${issue.returned} ? 'Returned' : (${issue.dueDate.isBefore(today)} ? 'Overdue' : 'Checked out')">Checked out</span></td>
+                    <td th:text="${'Rs. ' + #numbers.formatDecimal(issue.fine, 1, 2)}">Rs. 0.00</td>
+                    <td class="action-cell"><form th:if="${!issue.returned}" method="post" th:action="@{/loans/{id}/return(id=${issue.id})}"><button class="button button-light button-small" type="submit">Return</button></form></td>
+                </tr></tbody>
+            </table>
+        </div>
+    </section>
+    <footer>Library desk <span>·</span> Running locally on your computer</footer>
+</main>
+</body>
+</html>

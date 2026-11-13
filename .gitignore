@@ -4,3 +4,4 @@ sources.txt
 *.db
 *.ser
 *.log
+web/target/

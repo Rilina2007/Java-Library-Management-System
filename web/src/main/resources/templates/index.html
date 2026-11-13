@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Library overview</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body>
+<header class="topbar">
+    <a class="brand" th:href="@{/}"><span class="brand-mark">L</span> Library desk</a>
+    <nav aria-label="Main navigation">
+        <a class="active" th:href="@{/}">Overview</a>
+        <a th:href="@{/books}">Books</a>
+        <a th:href="@{/members}">Members</a>
+        <a th:href="@{/loans}">Loans</a>
+    </nav>
+</header>
+<main class="page">
+    <section class="welcome">
+        <p class="eyebrow">LIBRARY MANAGEMENT</p>
+        <h1>A little more organized.</h1>
+        <p class="muted">Your collection, members, and checkouts in one place.</p>
+        <div class="quick-links">
+            <a class="button button-dark" th:href="@{/books}">Browse catalogue <span aria-hidden="true">→</span></a>
+            <a class="text-link" th:href="@{/loans}">Manage checkouts</a>
+        </div>
+    </section>
+
+    <section class="stats" aria-label="Library statistics">
+        <article class="stat-card"><span class="stat-icon">▤</span><p class="stat-label">Titles in catalogue</p><p class="stat-value" th:text="${bookCount}">0</p></article>
+        <article class="stat-card"><span class="stat-icon green">↗</span><p class="stat-label">Copies available</p><p class="stat-value" th:text="${availableCount}">0</p></article>
+        <article class="stat-card"><span class="stat-icon lavender">♙</span><p class="stat-label">Registered members</p><p class="stat-value" th:text="${memberCount}">0</p></article>
+        <article class="stat-card"><span class="stat-icon orange">↔</span><p class="stat-label">Books checked out</p><p class="stat-value" th:text="${activeCount}">0</p></article>
+    </section>
+
+    <section class="section">
+        <div class="section-heading">
+            <div><p class="eyebrow">NEEDS ATTENTION</p><h2>Overdue books</h2></div>
+            <a class="text-link" th:href="@{/loans}">View all loans →</a>
+        </div>
+        <div class="empty-state" th:if="${#lists.isEmpty(overdueIssues)}">
+            <span class="empty-icon">✓</span><div><strong>All caught up</strong><p class="muted">There are no overdue books at the moment.</p></div>
+        </div>
+        <div class="table-wrap" th:unless="${#lists.isEmpty(overdueIssues)}">
+            <table><thead><tr><th>Book</th><th>Member</th><th>Due date</th><th>Status</th></tr></thead>
+                <tbody><tr th:each="issue : ${overdueIssues}">
+                    <td class="primary-cell" th:text="${issue.bookTitle}">Book title</td>
+                    <td th:text="${'#' + issue.memberId}">#1</td>
+                    <td th:text="${issue.dueDate}">2026-01-01</td>
+                    <td><span class="badge badge-late">Overdue</span></td>
+                </tr></tbody>
+            </table>
+        </div>
+    </section>
+    <footer>Library desk <span>·</span> Running locally on your computer</footer>
+</main>
+</body>
+</html>

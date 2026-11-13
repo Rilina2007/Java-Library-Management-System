@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Members · Library desk</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body>
+<header class="topbar">
+    <a class="brand" th:href="@{/}"><span class="brand-mark">L</span> Library desk</a>
+    <nav aria-label="Main navigation"><a th:href="@{/}">Overview</a><a th:href="@{/books}">Books</a><a class="active" th:href="@{/members}">Members</a><a th:href="@{/loans}">Loans</a></nav>
+</header>
+<main class="page">
+    <div class="page-heading"><div><p class="eyebrow">YOUR COMMUNITY</p><h1>Members</h1><p class="muted">Student and faculty memberships, together in one list.</p></div></div>
+    <div class="alert alert-success" role="status" th:if="${success}" th:text="${success}"></div>
+    <div class="alert alert-error" role="alert" th:if="${error}" th:text="${error}"></div>
+    <section class="panel">
+        <div class="section-heading compact"><div><h2>Register a member</h2><p class="muted">Borrowing limits are set by member type.</p></div></div>
+        <form class="form-grid" method="post" th:action="@{/members}">
+            <label>Name<input name="name" maxlength="120" required placeholder="Member name"></label>
+            <label>Email <span class="optional">(optional)</span><input name="email" type="email" maxlength="200" placeholder="name@example.com"></label>
+            <label>Member type<select name="type" required><option value="student">Student · up to 3 books</option><option value="faculty">Faculty · up to 5 books</option></select></label>
+            <div class="form-action"><button class="button button-dark" type="submit">Register member</button></div>
+        </form>
+    </section>
+    <section class="section">
+        <div class="section-heading"><div><p class="eyebrow">THE COMMUNITY</p><h2>Member directory</h2></div><span class="count-pill" th:text="${#lists.size(members) + ' members'}">0 members</span></div>
+        <div class="empty-state" th:if="${#lists.isEmpty(members)}"><span class="empty-icon">♙</span><div><strong>No members yet</strong><p class="muted">Register your first member above.</p></div></div>
+        <div class="table-wrap" th:unless="${#lists.isEmpty(members)}">
+            <table><thead><tr><th>Member</th><th>Email</th><th>Type</th><th>Borrowing limit</th><th>Late fine</th></tr></thead>
+                <tbody><tr th:each="member : ${members}">
+                    <td class="primary-cell"><span class="member-avatar" th:text="${#strings.substring(member.name, 0, 1).toUpperCase()}">M</span><span th:text="${member.name}">Name</span></td>
+                    <td th:text="${#strings.isEmpty(member.email) ? '—' : member.email}">Email</td>
+                    <td><span class="badge badge-ready" th:text="${member.type}">STUDENT</span></td>
+                    <td th:text="${member.borrowLimit + ' books'}">3 books</td>
+                    <td th:text="${'Rs. ' + member.finePerDay + ' / day'}">Rs. 2 / day</td>
+                </tr></tbody>
+            </table>
+        </div>
+    </section>
+    <footer>Library desk <span>·</span> Running locally on your computer</footer>
+</main>
+</body>
+</html>

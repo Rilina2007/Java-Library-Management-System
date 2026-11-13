@@ -7,13 +7,25 @@ search the catalogue, see overdue books, export reports and read the activity lo
 A background thread reminds you when books are overdue.
 
 ## How to run (Windows)
-1. Install JDK 17 or newer (check with `javac -version`).
+1. Install JDK 25 or newer (check with `javac -version`).
 2. Open the project folder in a terminal and double-click / run `run.bat`
    (Mac/Linux: `./run.sh`).
 3. The database file `library.db` is created automatically on the first run. No server needed.
 
 VS Code / IntelliJ: open the folder, mark `src` as the sources root, add `lib/sqlite-jdbc.jar`
 to the classpath and run `com.library.Main`.
+
+## Web frontend (Spring Boot)
+The project also includes a browser-based, server-rendered frontend built with Java 25, Spring Boot, and Thymeleaf (no browser-side JavaScript).
+It runs locally and provides an overview dashboard, book search and registration, member registration,
+and book issue/return screens. The existing console application remains available.
+
+1. Install JDK 25 or newer.
+2. From the project folder, run `run-web.bat` (Mac/Linux: `./run-web.sh`). The Maven Wrapper downloads Maven and the project dependencies the first time.
+3. Open [http://localhost:8080](http://localhost:8080) in your browser.
+
+The web app and console app use the same `library.db` when launched from the project folder. The web server binds to
+`127.0.0.1` and is intended for local use, not direct public deployment.
 
 ## Syllabus coverage
 | Syllabus topic | Where in the project |
@@ -36,6 +48,7 @@ src/com/library/
   exception/  LibraryException, BookNotAvailableException, LimitExceededException, NotFoundException
   db/         DBConnection, BookDAO, MemberDAO, IssueDAO
   service/    LibraryService, FileManager, OverdueChecker
+web/                              Spring Boot + Thymeleaf web frontend
 lib/sqlite-jdbc.jar              JDBC driver
 schema_mysql.sql                 only for the MySQL option
 ```

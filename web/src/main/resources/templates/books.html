@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Books · Library desk</title>
+    <link rel="stylesheet" th:href="@{/styles.css}">
+</head>
+<body>
+<header class="topbar">
+    <a class="brand" th:href="@{/}"><span class="brand-mark">L</span> Library desk</a>
+    <nav aria-label="Main navigation"><a th:href="@{/}">Overview</a><a class="active" th:href="@{/books}">Books</a><a th:href="@{/members}">Members</a><a th:href="@{/loans}">Loans</a></nav>
+</header>
+<main class="page">
+    <div class="page-heading"><div><p class="eyebrow">YOUR COLLECTION</p><h1>Books</h1><p class="muted">Keep your catalogue up to date and find your next read.</p></div></div>
+    <div class="alert alert-success" role="status" th:if="${success}" th:text="${success}"></div>
+    <div class="alert alert-error" role="alert" th:if="${error}" th:text="${error}"></div>
+    <section class="panel">
+        <div class="section-heading compact"><div><h2>Add a book</h2><p class="muted">New titles are ready to lend as soon as you add them.</p></div></div>
+        <form class="form-grid" method="post" th:action="@{/books}">
+            <label>Title<input name="title" maxlength="200" required placeholder="e.g. The Midnight Library"></label>
+            <label>Author<input name="author" maxlength="120" required placeholder="Author name"></label>
+            <label>Category<input name="category" maxlength="80" placeholder="General"></label>
+            <label>Copies<input name="copies" type="number" min="1" value="1" required></label>
+            <div class="form-action"><button class="button button-dark" type="submit">Add to catalogue</button></div>
+        </form>
+    </section>
+    <section class="section">
+        <div class="section-heading"><div><p class="eyebrow">THE SHELVES</p><h2>Catalogue</h2></div>
+            <form class="search-form" method="get" th:action="@{/books}">
+                <label class="sr-only" for="keyword">Search by title or author</label>
+                <input id="keyword" type="search" name="keyword" placeholder="Search title or author" th:value="${keyword}">
+                <button class="button button-light" type="submit">Search</button>
+            </form>
+        </div>
+        <div class="empty-state" th:if="${#lists.isEmpty(books)}"><span class="empty-icon">⌕</span><div><strong>No books found</strong><p class="muted">Try another search or add a new title above.</p></div></div>
+        <div class="table-wrap" th:unless="${#lists.isEmpty(books)}">
+            <table><thead><tr><th>Title</th><th>Author</th><th>Category</th><th>Copies</th><th>Availability</th></tr></thead>
+                <tbody><tr th:each="book : ${books}">
+                    <td class="primary-cell" th:text="${book.title}">Title</td>
+                    <td th:text="${book.author}">Author</td>
+                    <td th:text="${book.category}">Category</td>
+                    <td th:text="${book.total}">1</td>
+                    <td><span class="badge" th:classappend="${book.available > 0} ? 'badge-ready' : 'badge-late'" th:text="${book.available > 0 ? book.available + ' available' : 'Checked out'}">Available</span></td>
+                </tr></tbody>
+            </table>
+        </div>
+    </section>
+    <footer>Library desk <span>·</span> Running locally on your computer</footer>
+</main>
+</body>
+</html>

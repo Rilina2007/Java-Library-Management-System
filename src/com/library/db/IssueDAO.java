@@ -13,7 +13,9 @@ import java.util.List;
 public class IssueDAO {
 
     private static final String SELECT =
-            "SELECT i.*, b.title FROM issues i JOIN books b ON b.id = i.book_id ";
+            "SELECT i.*, b.title, m.name AS member_name "
+                    + "FROM issues i JOIN books b ON b.id = i.book_id "
+                    + "JOIN members m ON m.id = i.member_id ";
 
     public void insert(Connection con, int bookId, int memberId, LocalDate issue, LocalDate due)
             throws SQLException {
@@ -101,7 +103,8 @@ public class IssueDAO {
     private IssueRecord map(ResultSet rs) throws SQLException {
         String ret = rs.getString("return_date");
         return new IssueRecord(rs.getInt("id"), rs.getInt("book_id"), rs.getInt("member_id"),
-                rs.getString("title"), LocalDate.parse(rs.getString("issue_date")),
-                LocalDate.parse(rs.getString("due_date")), ret == null ? null : LocalDate.parse(ret));
+                rs.getString("title"), rs.getString("member_name"), LocalDate.parse(rs.getString("issue_date")),
+                LocalDate.parse(rs.getString("due_date")), ret == null ? null : LocalDate.parse(ret),
+                rs.getDouble("fine"));
     }
 }
